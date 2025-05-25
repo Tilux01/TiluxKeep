@@ -429,7 +429,7 @@ const archiveMapping = () =>{
     display.innerHTML = ""
     archivedArray.map((output,index)=>{
         display.innerHTML += `
-            <div id="card${index}" class="card" style="background:${output.color};>
+            <div id="card${index}" class="card" style="background:${output.color};">
                 <h1 contenteditable="true" id="archiveTitleText${index}" onclick="archivePreview('${index}')">${output.title}</h1>
                 <p contenteditable="true" id="archiveNoteText${index}" onclick="archivePreview('${index}')">${output.content}</p>
                 <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
