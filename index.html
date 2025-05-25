@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="dashboardStyle.css">
+</head>
+<style id="style">
+
+</style>
+<body>
+    <header>
+        <div class="burgerMenu" id="toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <img src="images/shopping-list.png" alt="">
+        <p>Tilux Keep</p>
+        <div>
+            <input type="text" placeholder="Search" id="searchInput"><span>
+            <img src="images/icon-search.svg" alt=""></span>
+        </div>
+        <div>
+            <img style="cursor: pointer;" src="images/refresh.png" alt="" id="reload">
+            <img style="cursor: pointer;" src="images/list.png" alt="" id="listType">
+        </div>
+        <strong id="profile">A</strong>
+    </header>
+    <div class="userProfile" id="userProfile">
+        <img src="images/inbox.png" alt=""id="profileImg" style="padding: 10px;">
+        <label for="profileUpload">Upload</label>
+        <input type="file" accept="image/*" id="profileUpload" style="display: none;">
+        <p>israeladekola8@gmail.com</p>
+        <p>Adekola Israel</p>
+    </div>
+    <section class="main">
+        <div class="siderBar" id="sideBar">
+            <ul>
+                <li id="noteSection"><span><img src="images/lightbulb.png" alt=""></span><p>Notes</p></li>
+                <li><span><img src="images/star.png" alt="" id="reminder"></span><p>Stared</p></li>
+                <li><span><img src="images/pen.png" alt=""></span><p>Edit&nbsp;Labels</p></li>
+                <li id="archive"><span><img src="images/download-file.png" alt=""></span><p>Archive</p></li>
+                <li id="trash"><span><img src="images/delete.png" alt=""></span><p>Trash</p></li>
+            </ul>
+        </div>
+        <div class="content" id="content">
+            <div class="inputDiv">
+                <input type="text" placeholder="Write note...." id="title">
+                <label for="firstInputImg"><span><img src="images/image.png" alt=""></span></label>
+                <input type="file" accept="image/" id="firstInputImg" style="display: none;">
+            </div>
+            <div class="noteBody" style="display: none;">
+                <textarea autofocus name="" id="note" placeholder="Your Text Here......"></textarea>
+                <button id="addNote">Add Note</button>
+            </div>
+            <h1 id="beneathAutohide" class="sectionHeading"></h1>
+            <div class="display" id="display">
+                    <!-- <div id="card" class="card">
+                        <img src="images/mark.png" alt="">
+                        <h1></h1>
+                        <p></p>
+                        <img src="" alt="" class="cardPicture" id="cardPicture">
+                        <div class="bottomButton" id="bottomButton">
+                            <img src="images/pallete.png" alt="">
+                            <img src="images/bell.png" alt="">
+                            <label for="upload"><img src="images/image.png" alt="" for="upload"></label>
+                            <input type="file" accept="image/*" id="upload" style="display: none;">
+                            <img src="images/download-file.png" alt="">
+                            <img src="images/pen.png" alt="">
+                            <img src="images/delete.png" alt="">
+                        </div>
+                    </div> -->
+            </div>
+        </div>
+    </section>
+    <script src="function.js"></script>
+</body>
+</html>

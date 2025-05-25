@@ -1,0 +1,43 @@
+<input type="file" id="imageInput" accept="image/*" />
+<p></p>
+<button onclick="uploadImage()">Upload Image</button>
+
+<script>
+  function uploadImage() {
+    const fileInput = document.getElementById('imageInput');
+    console.log(fileInput.files);
+    
+    const file = fileInput.files[0];
+
+    if (!file) {
+      alert("Please select an image!");
+      return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        document.querySelector("p").innerHTML = reader.result
+        console.log(e);
+        
+      const base64String = e.target.result; 
+    //   console.log(e);
+      // This is the Base64 string
+    //   console.log(base64String); // Output: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+
+      // Now, send this to your backend (e.g., via fetch/API)   
+      saveToDatabase(base64String);
+    };
+    reader.readAsDataURL(file); // Converts image to Base64
+  }
+
+  async function saveToDatabase(base64String) {
+    const response = await fetch('/api/save-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64String }),
+    });
+    const result = await response.json();
+    console.log("Saved to DB:", result);
+  }
+</script>
