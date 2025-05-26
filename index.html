@@ -20,7 +20,7 @@
         <p>Tilux Keep</p>
         <div>
             <input type="text" placeholder="Search" id="searchInput"><span>
-            <img src="images/icon-search.svg" alt=""></span>
+            <img src="images/icon-search.svg" alt="" id="searchBtn"></span>
         </div>
         <div>
             <img style="cursor: pointer;" src="images/refresh.png" alt="" id="reload">
@@ -39,13 +39,14 @@
         <div class="siderBar" id="sideBar">
             <ul>
                 <li id="noteSection"><span><img src="images/lightbulb.png" alt=""></span><p>Notes</p></li>
-                <li><span><img src="images/star.png" alt="" id="reminder"></span><p>Stared</p></li>
+                <li id="favorite"><span><img src="images/star.png" alt=""></span><p>Favorite</p></li>
                 <li><span><img src="images/pen.png" alt=""></span><p>Edit&nbsp;Labels</p></li>
                 <li id="archive"><span><img src="images/download-file.png" alt=""></span><p>Archive</p></li>
                 <li id="trash"><span><img src="images/delete.png" alt=""></span><p>Trash</p></li>
             </ul>
         </div>
         <div class="content" id="content">
+            <input type="text" id="secondSearch" placeholder="search..." style="font-weight: 600;">
             <div class="inputDiv">
                 <input type="text" placeholder="Write note...." id="title">
                 <label for="firstInputImg"><span><img src="images/image.png" alt=""></span></label>

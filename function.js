@@ -59,8 +59,6 @@ burgerMenu.addEventListener("click", ()=>{
 
 const sideList = document.querySelectorAll("section div:nth-child(1) ul li")
 
-const colorRemove = 
-
 sideList.forEach((list)=>{
     list.addEventListener("click", (e)=>{
         sideList.forEach((i)=>{
@@ -82,7 +80,6 @@ const listType = document.getElementById("listType")
 let counter = 0
 listType.addEventListener("click", ()=>{
     counter++;
-    console.log(counter);
     const display = document.getElementById("display")
     if (counter%2 != 0){
         display.style.display = "flex"
@@ -126,6 +123,8 @@ profileButton.addEventListener("click", ()=>{
 
 //search
 
+
+
 const searchInput = document.getElementById("searchInput")
 searchInput.addEventListener("input", ()=>{
     let values = searchInput.value.toLocaleLowerCase()
@@ -136,7 +135,31 @@ searchInput.addEventListener("input", ()=>{
             text.style.background = 'linear-gradient(135deg, rgba(255, 0, 0, 0.288), rgba(0, 0, 255, 0.233))'
         }
     })
-    // if (searchInput.value)
+})
+const secondSearch = document.getElementById("secondSearch")
+secondSearch.addEventListener("input", ()=>{
+    let values = secondSearch.value.toLocaleLowerCase()
+    let allCardText = document.querySelectorAll(".card p")
+    allCardText.forEach((text)=>{
+        text.style.background = ""
+        if(values && text.innerHTML.toLocaleLowerCase().includes(values)){
+            text.style.background = 'linear-gradient(135deg, rgba(255, 0, 0, 0.288), rgba(0, 0, 255, 0.233))'
+        }
+    })
+})
+const searchBtn = document.getElementById("searchBtn")
+let searchBtnCounter = 0
+searchBtn.addEventListener("click", ()=>{
+    screenWidth = window.innerWidth
+    if(screenWidth <= 600){
+        searchBtnCounter++;
+        if(searchBtnCounter%2 != 0){
+            secondSearch.style.display = "flex"
+        }
+        else{
+            secondSearch.style.display = "none"
+        }
+    }
 })
 
 
@@ -201,6 +224,7 @@ addNoteButton.addEventListener("click", ()=>{
     }
     else{
         const cardObj = {
+            star:"images/star.png",
             color: "transparent",
             img: collectCardImg,
             content: note.value,
@@ -216,18 +240,18 @@ const mapDisplay = () =>{
     noteArray.map((output,index)=>{
         display.innerHTML += `
             <div id="card${index}" class="card" style="background:${output.color};">
-                <img src="images/star.png" alt="" onclick="star('${index}')" id="starCard${index}">
+                <img src="${output.star}" alt="" onclick="star('${index}')" id="starCard${index}">
                 <h1 id="titleText${index}" contenteditable="true" onclick="preview(${index})">${output.title}</h1>
                 <p id="noteText${index}" contenteditable="true" onclick="preview(${index})">${output.content}</p>
                 <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
                 <div class="bottomButton" id="bottomButton">
-                    <img src="images/pallete.png" alt="" onclick="colorDisplay('${index}')">
-                    <img src="images/bell.png" alt="">
-                    <label for="upload${index}"><img src="images/image.png" alt="" for="upload${index}"></label>
+                    <img title="Color" src="images/pallete.png" alt="" onclick="colorDisplay('${index}')">
+                    <img title="Reminder" src="images/bell.png" alt="">
+                    <label title="Image" for="upload${index}"><img src="images/image.png" alt="" for="upload${index}" title="Image"></label>
                     <input type="file" accept="image/*" id="upload${index}" style="display: none;"onchange="changeImg('${index}')">
-                    <img src="images/download-file.png" alt="" onclick="archivedCard('${index}')">
-                    <img src="images/pen.png" alt="" onclick="preview(${index})">
-                    <img src="images/delete.png" alt="" onclick="deleteCard('${index}')">
+                    <img title="Archive" src="images/download-file.png" alt="" onclick="archivedCard('${index}')">
+                    <img title="Edit" src="images/pen.png" alt="" onclick="preview(${index})">
+                    <img title="Delete" src="images/delete.png" alt="" onclick="deleteCard('${index}')">
                     <button onclick = "closeEdit('${index}')">Close</button>
                 </div>
                 <div  class="colorParent">
@@ -253,15 +277,37 @@ const mapDisplay = () =>{
 const star = (index) =>{
     const starCard = document.getElementById("starCard"+index)
     let cardParent = document.querySelector(`#card${index}`)
-    alert(starCard.src)
     if (starCard.src.includes("images/star.png")){
-        alert("yes")
         starCard.src = "images/star (1).png"
+        const color = noteArray[index].color
+        const img = noteArray[index].img
+        const title = noteArray[index].title
+        const content = noteArray[index].content
+        const star = "images/star (1).png"
+        const cardObj = {
+            color,
+            img,
+            content,
+            title,
+            star
+        }
+        noteArray.splice(index,1,cardObj)
     }
     else{
-        alert("no")
         starCard.src = "images/star.png"
-
+        const color = noteArray[index].color
+        const img = noteArray[index].img
+        const title = noteArray[index].title
+        const content = noteArray[index].content
+        const star = "images/star.png"
+        const cardObj = {
+            color,
+            img,
+            content,
+            title,
+            star
+        }
+        noteArray.splice(index,1,cardObj)
     }
 }
 
@@ -286,11 +332,13 @@ const selectColor = (index, colorD) =>{
     const img = noteArray[index].img
     const title = noteArray[index].title
     const content = noteArray[index].content
+    const star = noteArray[index].star
     const cardObj = {
         color: colorD,
         img,
         content,
-        title
+        title,
+        star
     }
     noteArray.splice(index,1,cardObj)
 }
@@ -376,6 +424,7 @@ const closeEdit = (index) =>{
         // cardImg change
 const changeImg = (index) =>{
     const color = noteArray[index].color
+    const star = noteArray[index].star
     const upload = document.querySelector("#upload"+index)    
     const file = upload.files[0]
     let reader = new FileReader()
@@ -385,7 +434,8 @@ const changeImg = (index) =>{
             color,
             img:imgBase64,
             content:noteArray[index].content,
-            title:noteArray[index].title
+            title:noteArray[index].title,
+            star
         }
         noteArray.splice(index,1,collectCardImg)
         mapDisplay()
@@ -434,13 +484,13 @@ const archiveMapping = () =>{
                 <p contenteditable="true" id="archiveNoteText${index}" onclick="archivePreview('${index}')">${output.content}</p>
                 <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
                 <div class="bottomButton" id="bottomButton">
-                    <img src="images/pallete.png" alt="" onclick="colorDisplay('${index}')">
-                    <img src="images/bell.png" alt="">
-                    <label for="upload${index}"><img src="images/image.png" alt="" for="upload${index}"></label>
+                    <img title="Color" src="images/pallete.png" alt="" onclick="colorDisplay('${index}')">
+                    <img title="Reminder" src="images/bell.png" alt="">
+                    <label title="Image" for="upload${index}"><img src="images/image.png" alt="" for="upload${index}" title="Image"></label>
                     <input type="file" accept="image/*" id="upload${index}" style="display: none;"onchange="archiveChangeImg('${index}')">
-                    <img src="images/inbox.png" alt="" onclick="unarchiveCard('${index}')">
-                    <img src="images/pen.png" alt="" onclick="preview(${index})">
-                    <img src="images/delete.png" alt="" onclick="archiveDeleteCard('${index}')">
+                    <img title="Unarchive" src="images/inbox.png" alt="" onclick="unarchiveCard('${index}')">
+                    <img title="Edit Card" src="images/pen.png" alt="" onclick="preview(${index})">
+                    <img title="Delete" src="images/delete.png" alt="" onclick="archiveDeleteCard('${index}')">
                     <button onclick = "archiveCloseEdit('${index}')">Close</button>
                 </div>
                 <div  class="colorParent">
@@ -469,11 +519,13 @@ const archiveMapping = () =>{
         const img = archivedArray[index].img
         const title = archivedArray[index].title
         const content = archivedArray[index].content
+        const star = archivedArray[index].star
         const cardObj = {
             color: colorD,
             img,
             content,
-            title
+            title,
+            star
         }
         archivedArray.splice(index,1,cardObj)
     }
@@ -485,7 +537,8 @@ const archivePreview = (index) =>{
     archiveCloseEdit(index)
     style.innerHTML = `
         section .content .display .card,
-        section .content .inputDiv{
+        section .content .inputDiv,
+        #beneathAutohide{
             filter:blur(15px);
         }
         section .content .inputDiv{
@@ -544,20 +597,21 @@ const archiveCloseEdit = (index) =>{
     const style = document.getElementById("style")
     const image = archivedArray[index].img
     const color = archivedArray[index].color
-    console.log(title);
-    
+    const star = archivedArray[index].star
     style.innerHTML = ""
     const cardObj = {
         color,
         img: image,
         content: note.textContent,
-        title: title.textContent
+        title: title.textContent,
+        star
     }
     archivedArray.splice(index,1,cardObj)
 }
 const archiveChangeImg = (index) =>{
     const upload = document.querySelector("#upload"+index)   
     const color = archivedArray[index].color
+    const star = archivedArray[index].star
     const file = upload.files[0]
     let reader = new FileReader()
     reader.addEventListener("load", (e)=>{
@@ -566,7 +620,8 @@ const archiveChangeImg = (index) =>{
             color,
             img:imgBase64,
             content:archivedArray[index].content,
-            title:archivedArray[index].title
+            title:archivedArray[index].title,
+            star
         }
         archivedArray.splice(index,1,collectCardImg)
         archiveMapping()
@@ -585,6 +640,72 @@ const unarchiveCard = (index) =>{
     noteArray.push(archivedArray[index])
     archivedArray.splice(index,1)
     archiveMapping()
+}
+
+
+    // Favorite Section
+const favorite = document.getElementById("favorite")
+favorite.addEventListener("click", ()=>{
+    autoHideInp.style.display = "none"
+    autoShow.innerHTML = "Favorite"
+    display.innerHTML = ""
+    starMap()
+
+})
+const starMap = () =>{
+    noteArray.map((output,index)=>{
+        display.innerHTML += `
+            <div id="card${index}" class="card" style="background:${output.color};">
+                <img src="${output.star}" alt="" onclick="favoriteStar('${index}')" id="starCard${index}">
+                <h1 id="archiveTitleText${index}">${output.title}</h1>
+                <p id="archiveNoteText${index}">${output.content}</p>
+                <img src="${output.img}" alt="" class="cardPicture">
+            </div>
+        `
+        const star = document.getElementById("starCard"+index)
+        const card = document.getElementById("card"+index)
+        if(star.src.includes("images/star.png")){
+            card.style.display = "none"
+        }
+    })
+}
+const favoriteStar = (index) =>{
+    const starCard = document.getElementById("starCard"+index)
+    let cardParent = document.querySelector(`#card${index}`)
+    if (starCard.src.includes("images/star.png")){
+        starCard.src = "images/star (1).png"
+        const color = noteArray[index].color
+        const img = noteArray[index].img
+        const title = noteArray[index].title
+        const content = noteArray[index].content
+        const star = "images/star (1).png"
+        const cardObj = {
+            color,
+            img,
+            content,
+            title,
+            star
+        }
+        noteArray.splice(index,1,cardObj)
+        starMap()
+    }
+    else{
+        starCard.src = "images/star.png"
+        const color = noteArray[index].color
+        const img = noteArray[index].img
+        const title = noteArray[index].title
+        const content = noteArray[index].content
+        const star = "images/star.png"
+        const cardObj = {
+            color,
+            img,
+            content,
+            title,
+            star
+        }
+        noteArray.splice(index,1,cardObj)
+        starMap()
+    }
 }
 
 

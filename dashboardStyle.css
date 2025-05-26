@@ -241,8 +241,24 @@ section .content .inputDiv label{
 section .content .inputDiv span img{
     width: 100%;
     height: 100%;
+    filter: invert(1);
 }
-section .content > div:nth-child(2){
+#secondSearch{
+    outline: 0;
+    width: 80%;
+    top: 0;
+    padding: 20px;
+    overflow: hidden;
+    border: none;
+    border-radius: 20px;
+    font-size: 18px;
+    background-color: #525355c1;
+    display: flex;
+    justify-self: center;
+    align-self: center;
+    display: none;
+}
+section .content > div:nth-child(3){
     width: 100%;
     height: 200px;
     align-items: center;
@@ -251,7 +267,7 @@ section .content > div:nth-child(2){
     align-items: center;
     flex-direction: column;
 }
-section .content > div:nth-child(2) textarea{
+section .content > div:nth-child(3) textarea{
     width: 55%;
     background-color: transparent;
     color: white;
@@ -265,7 +281,7 @@ section .content > div:nth-child(2) textarea{
     border-radius: 0px 0px 20px 20px;
     height: 100%;
 }
-section .content > div:nth-child(2) button{
+section .content > div:nth-child(3) button{
     margin-left: -25px;
     margin-top: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 255, 0.295);
@@ -396,7 +412,7 @@ section .content .display .card .bottomButton img{
         width: 100%;
     }
     section .content .inputDiv input,
-    section .content > div:nth-child(2) textarea {
+    section .content > div:nth-child(3) textarea{
         width: 80%;
     }
 
@@ -438,6 +454,16 @@ section .content .display .card .bottomButton img{
         left: 45%;
         scale: 1.5;
         top: 0px;
+    }
+    header div:nth-child(5){
+        gap: 20px;
+        scale: 1.1;
+        right: 18%;
+    }
+    header div:nth-child(4){
+        scale: 1.4;
+        left: 40%;
+        top: -2px;
     }
 }
 
