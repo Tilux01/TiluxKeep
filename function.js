@@ -489,7 +489,7 @@ const archiveMapping = () =>{
                     <label title="Image" for="upload${index}"><img src="images/image.png" alt="" for="upload${index}" title="Image"></label>
                     <input type="file" accept="image/*" id="upload${index}" style="display: none;"onchange="archiveChangeImg('${index}')">
                     <img title="Unarchive" src="images/inbox.png" alt="" onclick="unarchiveCard('${index}')">
-                    <img title="Edit Card" src="images/pen.png" alt="" onclick="preview(${index})">
+                    <img title="Edit Card" src="images/pen.png" alt="" onclick="archivePreview(${index})">
                     <img title="Delete" src="images/delete.png" alt="" onclick="archiveDeleteCard('${index}')">
                     <button onclick = "archiveCloseEdit('${index}')">Close</button>
                 </div>
