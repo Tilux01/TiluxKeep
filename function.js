@@ -39,7 +39,6 @@ get(overhead).then((snapshot)=>{
             }
             if(snap.deletedArray != undefined){
                 deletedArray = snap.deletedArray
-                alert("yes")
             }
             if(snap.archivedArray != undefined){
                 archivedArray = snap.archivedArray
@@ -848,7 +847,6 @@ window.favoriteStar = (index) =>{
             deletedArray,
             profileImg: imgBase64
         })
-        starMap()
     }
     else{
         starCard.src = "images/star.png"
@@ -871,8 +869,8 @@ window.favoriteStar = (index) =>{
             deletedArray,
             profileImg: imgBase64
         })
-        starMap()
     }
+    starMap()
 }
 
 
