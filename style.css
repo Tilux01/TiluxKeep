@@ -21,16 +21,34 @@ section{
     background-color: #d2e7e5;
     position: relative;
     border-radius: 10px;
+    overflow: hidden;
 }
-section::after{
+.load{
     content: "";
     position: absolute;
+    display: none;
     height: 7px;
-    width: 98%;
+    width: 30%;
     border-radius: 30px;
     top: 0.5px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.205);
-    /* background: linear-gradient(135deg, blue, red); */
+    background: linear-gradient(135deg, blue, red);
+    animation: load 1s linear infinite;
+}
+section::before{
+    content: "";
+    position: absolute;
+    height: 50px;
+    width: 5%;
+    background-color: #d2e7e5;
+    top: 0;
+    right: 0;
+    z-index: 22;
+}
+@keyframes load {
+    100%{
+        transform: translateX(300%);
+    }
 }
 h1{
     font-weight: 900;
@@ -63,7 +81,7 @@ input{
     border-right: 2px solid red;
     border-radius: 20px;
 }
-button:nth-child(8){
+button:nth-child(9){
     padding: 10px;
     margin-top: 1rem;
     border-radius: 20px;
@@ -77,17 +95,18 @@ button:nth-child(8){
     cursor: pointer;
     transition: all 0.5s ease;
 }
-button:nth-child(8):hover{
+button:nth-child(9):hover{
     transform: translateY(-5px);
 }
 small{
     margin-top: 0.5rem;
     font-weight: 600;
+    cursor: pointer;
 }
 small span{
     color: green;
 }
-div:nth-child(10){
+div:nth-child(11){
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -95,7 +114,7 @@ div:nth-child(10){
     align-items: center;
     font-weight: bold;
 }
-div:nth-child(10) button{
+div:nth-child(11) button{
     background: transparent;
     padding: 10px 0px;
     width: 35%;
@@ -109,16 +128,16 @@ div:nth-child(10) button{
     cursor: pointer;
     transition: all 0.5s ease;
 }
-div:nth-child(10) button:hover{
+div:nth-child(11) button:hover{
     transform: translateY(-5px);
 }
 @media screen and (max-width:550px) {
     
-    div:nth-child(10){
+    div:nth-child(11){
         flex-direction: column;
         gap: 0.5rem;
     }
-    div:nth-child(10) button{
+    div:nth-child(11) button{
         width: 90%;
     }
 }

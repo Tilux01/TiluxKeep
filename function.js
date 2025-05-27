@@ -1,8 +1,64 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
+import { getDatabase, ref, push,set, get} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+const appSettings = {
+    databaseURL: "https://sqi-training-default-rtdb.firebaseio.com/"
+}
+
+const app = initializeApp(appSettings)
+const db = getDatabase(app)
+
+
 let noteArray = []
 let deletedArray = []
 let archivedArray = []
-let starArray = []
 const cardObj = {}
+let imgBase64 = ""
+const userCredential = JSON.parse(localStorage.getItem("TIluxKeep"))
+console.log(userCredential);
+
+if (userCredential == null || userCredential == "") {
+    window.location.href = "signup.html"
+}
+// Display Name
+const email = document.getElementById("displayEmail")
+const dName = document.getElementById("displayName")
+email.innerHTML = userCredential.email
+dName.innerHTML = userCredential.displayName
+
+// User details
+const userEmail = userCredential.displayName
+console.log();
+
+const overhead = ref(db,userEmail)
+
+get(overhead).then((snapshot)=>{
+        if(snapshot.exists()){
+            const snap = snapshot.val()
+            console.log(snap.noteArray);
+            
+            if(snap.noteArray != null || snap.noteArray != ""){
+                noteArray = snap.noteArray
+            }
+            if(snap.deletedArray != null || snap.deletedArray != ""){
+                deletedArray = snap.deletedArray
+            }
+            if(snap.archivedArray != null || snap.archivedArray != ""){
+                archivedArray = snap.archivedArray
+            }
+            if(snap.noteArray != null || snap.noteArray != ""){
+                noteArray = snap.noteArray
+            }if(snap.profileImg != null || snap.profileImg != ""){
+                const profileImg = document.getElementById("profileImg").src = snap.profileImg
+            }
+        }
+        else{
+            alert("Welcome to Tilux keep, we are excited to have you have you here, please feel free to make use of Keep and make use of the functionalities");
+        }
+        mapDisplay()
+    }).catch((error)=>{
+    })
+
 
 // burgerMenu Toggle Function
 let togggleCount = 0
@@ -72,6 +128,12 @@ const reloadButton = document.getElementById("reload")
 reloadButton.addEventListener("click", ()=>{
     // alert("yes")
     window.location.reload()
+})
+// Log out
+const logOutBtn = document.getElementById("logOut")
+logOutBtn.addEventListener("click",()=>{
+    localStorage.removeItem("TIluxKeep")
+    window.location.href = "login.html"
 })
 
 // ListType Function
@@ -171,8 +233,15 @@ profileUpload.addEventListener("change", ()=>{
     const file = profileUpload.files[0]
     let reader = new FileReader()
     reader.addEventListener("load", (e)=>{
-        const imgBase64 = e.target.result
+        const imgBase = e.target.result
+        imgBase64 = imgBase
         profileImg.src = imgBase64
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
     })
     reader.readAsDataURL(file)
 })
@@ -231,11 +300,17 @@ addNoteButton.addEventListener("click", ()=>{
             title: title.value
         }
         noteArray.push(cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
         mapDisplay()
     }
 })
 
-const mapDisplay = () =>{
+window.mapDisplay = () =>{
     display.innerHTML = ""
     noteArray.map((output,index)=>{
         display.innerHTML += `
@@ -274,7 +349,7 @@ const mapDisplay = () =>{
 }
 
     // star
-const star = (index) =>{
+window.star = (index) =>{
     const starCard = document.getElementById("starCard"+index)
     let cardParent = document.querySelector(`#card${index}`)
     if (starCard.src.includes("images/star.png")){
@@ -292,6 +367,12 @@ const star = (index) =>{
             star
         }
         noteArray.splice(index,1,cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
     }
     else{
         starCard.src = "images/star.png"
@@ -308,13 +389,19 @@ const star = (index) =>{
             star
         }
         noteArray.splice(index,1,cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
     }
 }
 
 
     // Color Display
 let colorCounter = 0
-const colorDisplay = (index) =>{
+window.colorDisplay = (index) =>{
     document.querySelectorAll(`.card .colorParent`).forEach((card)=>{card.style.display = "none"})
     let cardParent = document.querySelector(`#card${index} .colorParent`)
     colorCounter++;
@@ -326,7 +413,7 @@ const colorDisplay = (index) =>{
     }
 }
     // color Select
-const selectColor = (index, colorD) =>{
+window.selectColor = (index, colorD) =>{
     let cardParent = document.querySelector(`#card${index}`)
     cardParent.style.background = colorD
     const img = noteArray[index].img
@@ -341,11 +428,17 @@ const selectColor = (index, colorD) =>{
         star
     }
     noteArray.splice(index,1,cardObj)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
 }
 
 
     // Preview
-const preview = (index) =>{
+window.preview = (index) =>{
 const previewCard = document.getElementById("#card"+index)
 const style = document.getElementById("style")
 closeEdit(index)
@@ -404,7 +497,7 @@ closeEdit(index)
 
 // Close Preview
 
-const closeEdit = (index) =>{
+window.closeEdit = (index) =>{
     const title = document.getElementById("titleText"+index)
     const note = document.getElementById("noteText"+index)
     const style = document.getElementById("style")
@@ -419,10 +512,16 @@ const closeEdit = (index) =>{
         title: title.textContent
     }
     noteArray.splice(index,1,cardObj)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
 }
 
         // cardImg change
-const changeImg = (index) =>{
+window.changeImg = (index) =>{
     const color = noteArray[index].color
     const star = noteArray[index].star
     const upload = document.querySelector("#upload"+index)    
@@ -438,21 +537,39 @@ const changeImg = (index) =>{
             star
         }
         noteArray.splice(index,1,collectCardImg)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
         mapDisplay()
     })
     reader.readAsDataURL(file)
 }
 
 
-const deleteCard = (index) =>{
+window.deleteCard = (index) =>{
     deletedArray.push(noteArray[index])
     noteArray.splice(index,1)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
     mapDisplay()
 }
 
-const archivedCard = (index) =>{
+window.archivedCard = (index) =>{
     archivedArray.push(noteArray[index])
     noteArray.splice(index,1)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
     mapDisplay()
 }
 
@@ -475,7 +592,7 @@ archive.addEventListener("click", ()=>{
     autoShow.innerHTML = "Archive"
     archiveMapping()
 })
-const archiveMapping = () =>{
+window.archiveMapping = () =>{
     display.innerHTML = ""
     archivedArray.map((output,index)=>{
         display.innerHTML += `
@@ -513,7 +630,7 @@ const archiveMapping = () =>{
 }
 
     // archive select color
-    const archiveSelectColor = (index, colorD) =>{
+    window.archiveSelectColor = (index, colorD) =>{
         let cardParent = document.querySelector(`#card${index}`)
         cardParent.style.background = colorD
         const img = archivedArray[index].img
@@ -528,10 +645,16 @@ const archiveMapping = () =>{
             star
         }
         archivedArray.splice(index,1,cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
     }
     
 
-const archivePreview = (index) =>{
+window.archivePreview = (index) =>{
     const previewCard = document.getElementById("#card"+index)
     const style = document.getElementById("style")
     archiveCloseEdit(index)
@@ -591,7 +714,7 @@ const archivePreview = (index) =>{
 
 // Close Preview
 
-const archiveCloseEdit = (index) =>{
+window.archiveCloseEdit = (index) =>{
     const title = document.getElementById(`archiveTitleText${index}`)
     const note = document.getElementById("archiveNoteText"+index)
     const style = document.getElementById("style")
@@ -607,8 +730,14 @@ const archiveCloseEdit = (index) =>{
         star
     }
     archivedArray.splice(index,1,cardObj)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
 }
-const archiveChangeImg = (index) =>{
+window.archiveChangeImg = (index) =>{
     const upload = document.querySelector("#upload"+index)   
     const color = archivedArray[index].color
     const star = archivedArray[index].star
@@ -624,21 +753,39 @@ const archiveChangeImg = (index) =>{
             star
         }
         archivedArray.splice(index,1,collectCardImg)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
         archiveMapping()
     })
     reader.readAsDataURL(file)
 }
 
 
-const archiveDeleteCard = (index) =>{
+window.archiveDeleteCard = (index) =>{
     deletedArray.push(archivedArray[index])
     archivedArray.splice(index,1)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
     archiveMapping()
 }
 
-const unarchiveCard = (index) =>{
+window.unarchiveCard = (index) =>{
     noteArray.push(archivedArray[index])
     archivedArray.splice(index,1)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
     archiveMapping()
 }
 
@@ -652,7 +799,7 @@ favorite.addEventListener("click", ()=>{
     starMap()
 
 })
-const starMap = () =>{
+window.starMap = () =>{
     noteArray.map((output,index)=>{
         display.innerHTML += `
             <div id="card${index}" class="card" style="background:${output.color};">
@@ -669,7 +816,7 @@ const starMap = () =>{
         }
     })
 }
-const favoriteStar = (index) =>{
+window.favoriteStar = (index) =>{
     const starCard = document.getElementById("starCard"+index)
     let cardParent = document.querySelector(`#card${index}`)
     if (starCard.src.includes("images/star.png")){
@@ -687,6 +834,12 @@ const favoriteStar = (index) =>{
             star
         }
         noteArray.splice(index,1,cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
         starMap()
     }
     else{
@@ -704,6 +857,12 @@ const favoriteStar = (index) =>{
             star
         }
         noteArray.splice(index,1,cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64
+        })
         starMap()
     }
 }
@@ -716,7 +875,7 @@ trash.addEventListener("click", ()=>{
     autoShow.innerHTML = "Trash"
     trashMapping()
 })
-const trashMapping = () =>{
+window.trashMapping = () =>{
     display.innerHTML = ""
     deletedArray.map((output,index)=>{
         display.innerHTML += `
@@ -738,13 +897,26 @@ const trashMapping = () =>{
     document.querySelector("section .content .inputDiv span img").style.filter = "invert(1)"
     collectCardImg =""
 }  
-const trashDeleteCard = (index) =>{
+window.trashDeleteCard = (index) =>{
     deletedArray.splice(index,1)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
     trashMapping()
 }
 
-const recoverCard = (index) =>{
+window.recoverCard = (index) =>{
     noteArray.push(deletedArray[index])
     deletedArray.splice(index,1)
+    const pushed = set(ref(db, userEmail),{
+        noteArray,
+        archivedArray,
+        deletedArray,
+        profileImg: imgBase64
+    })
     trashMapping()
 }
+

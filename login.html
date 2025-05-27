@@ -8,15 +8,16 @@
 </head>
 <body>
     <section>
-        <h1>Welcome to Tilux Note Keep</h1>
-        <label for="uname">Enter Your Username</label>
-        <input id="uname" type="text" placeholder="Your Username Here">
+        <div class="load"></div>
+        <h1>Welcome back, Login</h1>
+        <label style="display: none;" for="uname">Enter Your Username</label>
+        <input style="display: none;" id="uname" type="text" placeholder="Your Username Here">
         <label for="email">Enter Your Email</label>
         <input id="email" type="text" placeholder="Your Email Here">
         <label for="password">Enter Your Password</label>
         <input id="password" type="text" placeholder="Password">
-        <button>Sign Up</button>
-        <small>Already have an account?<span> LogIn</span></small>
+        <button id="btn">Log In</button>
+        <small onclick="window.location.href = 'signup.html'">Don't have an account?<span> SignUp</span></small>
         <div>
             <button><span><img src="" alt=""></span>Login in with Google</button>
             <p>---or---</p>
@@ -24,4 +25,5 @@
         </div>
     </section>
 </body>
+<script type="module" src="login.js"></script>
 </html>
