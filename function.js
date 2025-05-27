@@ -37,26 +37,32 @@ get(overhead).then((snapshot)=>{
             const snap = snapshot.val()
             console.log(snap.noteArray);
             
-            if(snap.noteArray != null || snap.noteArray != ""){
+            if(snap.noteArray != undefined){
                 noteArray = snap.noteArray
             }
-            if(snap.deletedArray != null || snap.deletedArray != ""){
+            if(snap.deletedArray != undefined){
                 deletedArray = snap.deletedArray
+                alert("yes")
             }
-            if(snap.archivedArray != null || snap.archivedArray != ""){
+            if(snap.archivedArray != undefined){
                 archivedArray = snap.archivedArray
             }
-            if(snap.noteArray != null || snap.noteArray != ""){
-                noteArray = snap.noteArray
-            }if(snap.profileImg != null || snap.profileImg != ""){
+            if(snap.profileImg != undefined){
                 const profileImg = document.getElementById("profileImg").src = snap.profileImg
+                imgBase64 = snap.profileImg
             }
+            console.log(noteArray);
+            console.log(archivedArray);
+            console.log(deletedArray);
         }
         else{
             alert("Welcome to Tilux keep, we are excited to have you have you here, please feel free to make use of Keep and make use of the functionalities");
         }
         mapDisplay()
     }).catch((error)=>{
+        errorCode = error.code
+        console.log(errorCode);
+        
     })
 
 
@@ -292,6 +298,7 @@ addNoteButton.addEventListener("click", ()=>{
         alert("Pls write Note to add")
     }
     else{
+
         const cardObj = {
             star:"images/star.png",
             color: "transparent",
@@ -300,6 +307,7 @@ addNoteButton.addEventListener("click", ()=>{
             title: title.value
         }
         noteArray.push(cardObj)
+        console.log(deletedArray);
         const pushed = set(ref(db, userEmail),{
             noteArray,
             archivedArray,
@@ -918,5 +926,5 @@ window.recoverCard = (index) =>{
         profileImg: imgBase64
     })
     trashMapping()
-}
 
+}
