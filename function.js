@@ -218,7 +218,7 @@ secondSearch.addEventListener("input", ()=>{
 const searchBtn = document.getElementById("searchBtn")
 let searchBtnCounter = 0
 searchBtn.addEventListener("click", ()=>{
-    screenWidth = window.innerWidth
+    const screenWidth = window.innerWidth
     if(screenWidth <= 600){
         searchBtnCounter++;
         if(searchBtnCounter%2 != 0){
