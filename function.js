@@ -52,6 +52,7 @@ get(overhead).then((snapshot)=>{
         else{
             alert("Welcome to Tilux keep, we are excited to have you have you here, please feel free to make use of Keep and make use of the functionalities");
         }
+        roller.style.display = "none"
         mapDisplay()
     })
     .catch((error)=>{
