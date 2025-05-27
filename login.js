@@ -23,8 +23,13 @@ btn.addEventListener("click", async()=>{
     } catch (error) {
         document.querySelector(".load").style.display = "none"
         const errorCode = error.code
+        console.log(errorCode);
+        
         if(errorCode == "auth/network-request-failed"){
             alert("pls connect to internet")
+        }
+        else if(errorCode == "auth/invalid-credential"){
+            alert("Invalid credentials, pls try again")
         }
     }
 })

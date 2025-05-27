@@ -15,7 +15,6 @@ let archivedArray = []
 const cardObj = {}
 let imgBase64 = ""
 const userCredential = JSON.parse(localStorage.getItem("TIluxKeep"))
-console.log(userCredential);
 
 if (userCredential == null || userCredential == "") {
     window.location.href = "signup.html"
@@ -28,14 +27,12 @@ dName.innerHTML = userCredential.displayName
 
 // User details
 const userEmail = userCredential.displayName
-console.log();
 
 const overhead = ref(db,userEmail)
 
 get(overhead).then((snapshot)=>{
         if(snapshot.exists()){
             const snap = snapshot.val()
-            console.log(snap.noteArray);
             
             if(snap.noteArray != undefined){
                 noteArray = snap.noteArray
@@ -51,19 +48,22 @@ get(overhead).then((snapshot)=>{
                 const profileImg = document.getElementById("profileImg").src = snap.profileImg
                 imgBase64 = snap.profileImg
             }
-            console.log(noteArray);
-            console.log(archivedArray);
-            console.log(deletedArray);
         }
         else{
             alert("Welcome to Tilux keep, we are excited to have you have you here, please feel free to make use of Keep and make use of the functionalities");
         }
         mapDisplay()
-    }).catch((error)=>{
+    })
+    .catch((error)=>{
         errorCode = error.code
         console.log(errorCode);
         
     })
+const online = window.clientInformation.onLine
+if(online == false){
+    alert("Pls connect to the internet")
+}
+
 
 
 // burgerMenu Toggle Function
@@ -307,7 +307,6 @@ addNoteButton.addEventListener("click", ()=>{
             title: title.value
         }
         noteArray.push(cardObj)
-        console.log(deletedArray);
         const pushed = set(ref(db, userEmail),{
             noteArray,
             archivedArray,
