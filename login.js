@@ -2,10 +2,11 @@ import {createUserWithEmailAndPassword,signInWithEmailAndPassword, sendEmailVeri
 import {auth} from "./config.js"
 
 const btn = document.getElementById("btn")
+const googleBtn = document.getElementById("googleBtn")
 
 btn.addEventListener("click", async()=>{
     document.querySelector(".load").style.display = "block"
-    const email = document.getElementById("email").value
+    const email = document.getElementById("email").value.toLowerCase()
     const password = document.getElementById("password").value
     if(email == "" || password == ""){
         alert("Pls fill in the info")
@@ -23,7 +24,6 @@ btn.addEventListener("click", async()=>{
     } catch (error) {
         document.querySelector(".load").style.display = "none"
         const errorCode = error.code
-        console.log(errorCode);
         
         if(errorCode == "auth/network-request-failed"){
             alert("pls connect to internet")
@@ -31,6 +31,29 @@ btn.addEventListener("click", async()=>{
         else if(errorCode == "auth/invalid-credential"){
             alert("Invalid credentials, pls try again")
         }
+    }
+})
+
+googleBtn.addEventListener("click", async()=>{
+    try {
+        const provider = new GoogleAuthProvider(auth, email)
+
+        provider.addScope("profile")
+        provider.addScope("email")
+
+        const userCredential = await signInWithPopup(auth, provider)
+        localStorage.setItem("TIluxKeep", JSON.stringify(userCredential.user))
+        if(userCredential.additionalUserInfo?.isNewUser){
+            alert("You're Welcome")
+        }
+        else{
+            alert("Welcome back")
+        }
+        setTimeout(() => {
+            window.location.href = "index.html"
+        }, 2000);
+    } catch (error) {
+        console.log(error);
     }
 })
 

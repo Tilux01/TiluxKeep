@@ -41,7 +41,7 @@
             <ul>
                 <li id="noteSection"><span><img src="images/lightbulb.png" alt=""></span><p>Notes</p></li>
                 <li id="favorite"><span><img src="images/star.png" alt=""></span><p>Favorite</p></li>
-                <li><span><img src="images/bell.png" alt=""></span><p>Reminder</p></li>
+                <li id="remindSec"><span><img src="images/bell.png" alt=""></span><p>Reminder</p></li>
                 <li id="archive"><span><img src="images/download-file.png" alt=""></span><p>Archive</p></li>
                 <li id="trash"><span><img src="images/delete.png" alt=""></span><p>Trash</p></li>
             </ul>
@@ -78,6 +78,14 @@
             <div class="roller" id="roller"></div>
         </div>
     </section>
+    <div class="reminderParent">
+        <h1>Set Reminder</h1>
+        <input type="date" id="inputDate">
+        <div>
+            <button id="setRemind">Set Time</button>
+            <button id="closeRemind">Close</button>
+        </div>
+    </div>
     <script type="module" src="function.js"></script>
 </body>
 </html>

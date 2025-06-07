@@ -12,6 +12,7 @@ const db = getDatabase(app)
 let noteArray = []
 let deletedArray = []
 let archivedArray = []
+let reminderArray = []
 const cardObj = {}
 let imgBase64 = ""
 const userCredential = JSON.parse(localStorage.getItem("TIluxKeep"))
@@ -40,6 +41,9 @@ get(overhead).then((snapshot)=>{
             if(snap.deletedArray != undefined){
                 deletedArray = snap.deletedArray
             }
+            if(snap.reminderArray != undefined){
+                reminderArray = snap.reminderArray
+            }
             if(snap.archivedArray != undefined){
                 archivedArray = snap.archivedArray
             }
@@ -56,7 +60,6 @@ get(overhead).then((snapshot)=>{
     })
     .catch((error)=>{
         errorCode = error.code
-        console.log(errorCode);
         
     })
 const online = window.clientInformation.onLine
@@ -246,7 +249,8 @@ profileUpload.addEventListener("change", ()=>{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
     })
     reader.readAsDataURL(file)
@@ -304,20 +308,24 @@ addNoteButton.addEventListener("click", ()=>{
             color: "transparent",
             img: collectCardImg,
             content: note.value,
-            title: title.value
+            title: title.value,
+            reminder: ""
         }
         noteArray.push(cardObj)
         const pushed = set(ref(db, userEmail),{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
         mapDisplay()
     }
 })
 
 window.mapDisplay = () =>{
+    const htmlStyle = document.getElementById("style")
+    htmlStyle.innerHTML = ""
     display.innerHTML = ""
     noteArray.map((output,index)=>{
         display.innerHTML += `
@@ -328,7 +336,7 @@ window.mapDisplay = () =>{
                 <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
                 <div class="bottomButton" id="bottomButton">
                     <img title="Color" src="images/pallete.png" alt="" onclick="colorDisplay('${index}')">
-                    <img title="Reminder" src="images/bell.png" alt="">
+                    <img title="Reminder" onclick="remind('${index}')" src="images/bell.png" alt="">
                     <label title="Image" for="upload${index}"><img src="images/image.png" alt="" for="upload${index}" title="Image"></label>
                     <input type="file" accept="image/*" id="upload${index}" style="display: none;"onchange="changeImg('${index}')">
                     <img title="Archive" src="images/download-file.png" alt="" onclick="archivedCard('${index}')">
@@ -354,6 +362,136 @@ window.mapDisplay = () =>{
     document.querySelector("section .content .inputDiv span img").style.filter = "invert(1)"
     collectCardImg =""
 }
+// Reminder
+let index;
+
+const reminderParent = document.querySelector(".reminderParent")
+const setRemind = document.getElementById("setRemind")
+const closeRemind = document.getElementById("closeRemind")
+window.remind = (i) =>{
+    index = i
+    reminderParent.style.display = "flex"
+    display.style.filter = "blur(15px)"
+}
+closeRemind.addEventListener("click",()=>{
+    document.getElementById("inputDate").value = ""
+    reminderParent.style.display = "none"
+    display.style.filter = "blur(0px)"
+})
+setRemind.addEventListener("click", ()=>{
+    const InputDate = document.getElementById("inputDate").value
+    if(InputDate == ""){
+        alert("Pls Set time to save")
+    }
+    else{
+        const img = noteArray[index].img
+        const title = noteArray[index].title
+        const content = noteArray[index].content
+        const color = noteArray[index].color
+        const star = noteArray[index].star
+        
+        const cardObj = {
+            color: color,
+            img,
+            content,
+            title,
+            star,
+            reminder: InputDate
+        }
+        
+        noteArray.splice(index,1,cardObj)
+        const pushed = set(ref(db, userEmail),{
+            noteArray,
+            archivedArray,
+            deletedArray,
+            profileImg: imgBase64,
+            reminderArray
+        })
+        if(reminderArray.length == 0){
+            reminderArray.push(InputDate)
+            const pushed = set(ref(db, userEmail),{
+                noteArray,
+                archivedArray,
+                deletedArray,
+                profileImg: imgBase64,
+                reminderArray
+            })
+        }
+        else{
+            let decision = true;
+            for (let index = 0; index < reminderArray.length; index++) {
+                if(InputDate == reminderArray[index]){
+                    decision = false
+                }
+            }
+            if(decision == true){
+                reminderArray.push(InputDate)
+                const pushed = set(ref(db, userEmail),{
+                    noteArray,
+                    archivedArray,
+                    deletedArray,
+                    profileImg: imgBase64,
+                    reminderArray
+                })
+            }
+        }
+    }
+    alert("Reminder set successfully")
+})
+
+
+// Remind Section
+const remindSec = document.getElementById("remindSec")
+remindSec.addEventListener("click",()=>{
+    display.innerHTML = ""
+    display.style.columnCount = "1"
+    display.innerHTML = `
+    <main id="timeP"></main>
+    `
+    const htmlStyle = document.getElementById("style")
+    htmlStyle.innerHTML =  `
+    section .content .display{
+        column-count: 0;
+        column-gap: 0rem;
+        
+    }
+    section .content .display .card{
+        break-inside: unset;
+        -webkit-column-break-inside: unset;
+    }
+    `
+    const timeP = document.getElementById("timeP")
+    reminderArray.map((time,index)=>{
+        timeP.innerHTML += `
+        <div class="timeParent">
+            <p id="timeChild${JSON.stringify(index)}">${time}</p>
+            <div id="timeParent${index}"></div>
+        </div>
+        `
+        const timeParent = document.getElementById(`timeParent${JSON.stringify(index)}`)
+        const timeChild = document.getElementById(`timeChild${JSON.stringify(index)}`)
+        timeParent.style.display = "flex"
+        timeParent.style.gap = "1rem"
+        let check = false
+        noteArray.map((output,i)=>{
+            if (output.reminder == timeChild.innerHTML && output.reminder != "" && output){
+                check = true
+                timeParent.innerHTML +=`
+                <div id="card${index}" class="card" style="background:${output.color};">
+                    <img src="${output.star}" alt="" onclick="star('${index}')" id="starCard${index}">
+                    <h1 id="titleText${index}" contenteditable="true" onclick="preview(${index})">${output.title}</h1>
+                    <p id="noteText${index}" contenteditable="true" onclick="preview(${index})">${output.content}</p>
+                    <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
+                </div>
+                `
+            }
+        })
+        if (check == false){
+            
+            timeChild.style.display = "none"
+        }
+    })
+})
 
     // star
 window.star = (index) =>{
@@ -365,20 +503,23 @@ window.star = (index) =>{
         const img = noteArray[index].img
         const title = noteArray[index].title
         const content = noteArray[index].content
+        const reminder = noteArray[index].reminder
         const star = "images/star (1).png"
         const cardObj = {
             color,
             img,
             content,
             title,
-            star
+            star,
+            reminder
         }
         noteArray.splice(index,1,cardObj)
         const pushed = set(ref(db, userEmail),{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
     }
     else{
@@ -387,20 +528,23 @@ window.star = (index) =>{
         const img = noteArray[index].img
         const title = noteArray[index].title
         const content = noteArray[index].content
+        const reminder = noteArray[index].reminder
         const star = "images/star.png"
         const cardObj = {
             color,
             img,
             content,
             title,
-            star
+            star,
+            reminder
         }
         noteArray.splice(index,1,cardObj)
         const pushed = set(ref(db, userEmail),{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
     }
 }
@@ -426,20 +570,23 @@ window.selectColor = (index, colorD) =>{
     const img = noteArray[index].img
     const title = noteArray[index].title
     const content = noteArray[index].content
+    const reminder = noteArray[index].reminder
     const star = noteArray[index].star
     const cardObj = {
         color: colorD,
         img,
         content,
         title,
-        star
+        star,
+        reminder
     }
     noteArray.splice(index,1,cardObj)
     const pushed = set(ref(db, userEmail),{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
 }
 
@@ -510,20 +657,23 @@ window.closeEdit = (index) =>{
     const style = document.getElementById("style")
     const image = noteArray[index].img
     const color = noteArray[index].color
+    const reminder = noteArray[index].reminder
     
     style.innerHTML = ""
     const cardObj = {
         color,
         img: image,
         content: note.textContent,
-        title: title.textContent
+        title: title.textContent,
+        reminder
     }
     noteArray.splice(index,1,cardObj)
     const pushed = set(ref(db, userEmail),{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
 }
 
@@ -531,6 +681,7 @@ window.closeEdit = (index) =>{
 window.changeImg = (index) =>{
     const color = noteArray[index].color
     const star = noteArray[index].star
+    const reminder = noteArray[index].reminder
     const upload = document.querySelector("#upload"+index)    
     const file = upload.files[0]
     let reader = new FileReader()
@@ -541,14 +692,16 @@ window.changeImg = (index) =>{
             img:imgBase64,
             content:noteArray[index].content,
             title:noteArray[index].title,
-            star
+            star,
+            reminder
         }
         noteArray.splice(index,1,collectCardImg)
         const pushed = set(ref(db, userEmail),{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
         mapDisplay()
     })
@@ -563,7 +716,8 @@ window.deleteCard = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
     mapDisplay()
 }
@@ -575,7 +729,8 @@ window.archivedCard = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
     mapDisplay()
 }
@@ -600,6 +755,8 @@ archive.addEventListener("click", ()=>{
     archiveMapping()
 })
 window.archiveMapping = () =>{
+    const htmlStyle = document.getElementById("style")
+    htmlStyle.innerHTML = ""
     display.innerHTML = ""
     archivedArray.map((output,index)=>{
         display.innerHTML += `
@@ -609,7 +766,6 @@ window.archiveMapping = () =>{
                 <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
                 <div class="bottomButton" id="bottomButton">
                     <img title="Color" src="images/pallete.png" alt="" onclick="colorDisplay('${index}')">
-                    <img title="Reminder" src="images/bell.png" alt="">
                     <label title="Image" for="upload${index}"><img src="images/image.png" alt="" for="upload${index}" title="Image"></label>
                     <input type="file" accept="image/*" id="upload${index}" style="display: none;"onchange="archiveChangeImg('${index}')">
                     <img title="Unarchive" src="images/inbox.png" alt="" onclick="unarchiveCard('${index}')">
@@ -656,7 +812,8 @@ window.archiveMapping = () =>{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
     }
     
@@ -741,7 +898,8 @@ window.archiveCloseEdit = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
 }
 window.archiveChangeImg = (index) =>{
@@ -764,7 +922,8 @@ window.archiveChangeImg = (index) =>{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
         archiveMapping()
     })
@@ -779,7 +938,8 @@ window.archiveDeleteCard = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
     archiveMapping()
 }
@@ -791,7 +951,8 @@ window.unarchiveCard = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
     archiveMapping()
 }
@@ -807,6 +968,8 @@ favorite.addEventListener("click", ()=>{
 
 })
 window.starMap = () =>{
+    const htmlStyle = document.getElementById("style")
+    htmlStyle.innerHTML = ""
     noteArray.map((output,index)=>{
         display.innerHTML += `
             <div id="card${index}" class="card" style="background:${output.color};">
@@ -824,6 +987,8 @@ window.starMap = () =>{
     })
 }
 window.favoriteStar = (index) =>{
+    const htmlStyle = document.getElementById("style")
+    htmlStyle.innerHTML = ""
     const starCard = document.getElementById("starCard"+index)
     let cardParent = document.querySelector(`#card${index}`)
     if (starCard.src.includes("images/star.png")){
@@ -845,7 +1010,8 @@ window.favoriteStar = (index) =>{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
     }
     else{
@@ -867,7 +1033,8 @@ window.favoriteStar = (index) =>{
             noteArray,
             archivedArray,
             deletedArray,
-            profileImg: imgBase64
+            profileImg: imgBase64,
+            reminderArray
         })
     }
     starMap()
@@ -909,7 +1076,8 @@ window.trashDeleteCard = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
     trashMapping()
 }
@@ -921,8 +1089,17 @@ window.recoverCard = (index) =>{
         noteArray,
         archivedArray,
         deletedArray,
-        profileImg: imgBase64
+        profileImg: imgBase64,
+        reminderArray
     })
     trashMapping()
 
 }
+
+// const addUrlBtn = document.getElementById("btnButton")
+// const allMail = document.querySelectorAll(".mails")
+// addUrlBtn.addEventListener("click", ()=>{
+//     allMail.forEach((mail)=>{
+//         mail.target(event)
+//     })
+// })

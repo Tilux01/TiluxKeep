@@ -2,6 +2,7 @@ import {createUserWithEmailAndPassword,signInWithEmailAndPassword, sendEmailVeri
 import {auth} from "./config.js"
 
 const btn = document.getElementById("btn")
+const googleBtn = document.getElementById("signWithGoogle")
 
 btn.addEventListener("click", ()=>{
     document.querySelector(".load").style.display = "block"
@@ -26,12 +27,7 @@ const signUser = async() =>{
         await updateProfile(userCredential.user, {
             displayName: username
         })
-        console.log(userCredential);
         await sendEmailVerification(userCredential.user)
-        // const TiluxKeep = {
-        //     username,email,password
-        // }
-        // window.localStorage.setItem('emailForSignIn', TiluxKeep);
         setTimeout(() => {
             window.location.href = 'EmailVerify.html'
         }, 3000);
@@ -40,8 +36,6 @@ const signUser = async() =>{
         document.querySelector(".load").style.display = "none"
         const errorCode = error.code;
         const errorMessage = error.message
-        alert(errorMessage)
-        console.log(errorCode);
         if (error.code == "auth/password-does-not-meet-requirements"){
             alert("Pls use a strong password")
         }
@@ -53,3 +47,26 @@ const signUser = async() =>{
         }
     };
 }
+
+googleBtn.addEventListener("click", async()=>{
+    try {
+        const provider = new GoogleAuthProvider(auth, email)
+
+        provider.addScope("profile")
+        provider.addScope("email")
+
+        const userCredential = await signInWithPopup(auth, provider)
+        localStorage.setItem("TIluxKeep", JSON.stringify(userCredential.user))
+        if(userCredential.additionalUserInfo?.isNewUser){
+            alert("You're Welcome")
+        }
+        else{
+            alert("Welcome back")
+        }
+        setTimeout(() => {
+            window.location.href = "index.html"
+        }, 2000);
+    } catch (error) {
+        console.log(error);
+    }
+})
