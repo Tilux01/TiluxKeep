@@ -472,7 +472,7 @@ section .content .display .card .bottomButton img{
     font-size: 3.5rem;
     /* margin-top: -130px; */
     background: linear-gradient(135deg, blue, red);
-    width: 220px;
+    width: 280px;
     background-clip: text;
     color: transparent;
     -webkit-background-clip: text;

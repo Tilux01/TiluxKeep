@@ -441,8 +441,8 @@ setRemind.addEventListener("click", ()=>{
 
 
 // Remind Section
-const remindSec = document.getElementById("remindSec")
 remindSec.addEventListener("click",()=>{
+    autoShow.innerHTML = "Reminder"
     display.innerHTML = ""
     display.style.columnCount = "1"
     display.innerHTML = `
@@ -453,6 +453,8 @@ remindSec.addEventListener("click",()=>{
     section .content .display{
         column-count: 0;
         column-gap: 0rem;
+        display:flex;
+        flex-direction:column;
         
     }
     section .content .display .card{
@@ -471,6 +473,7 @@ remindSec.addEventListener("click",()=>{
         const timeParent = document.getElementById(`timeParent${JSON.stringify(index)}`)
         const timeChild = document.getElementById(`timeChild${JSON.stringify(index)}`)
         timeParent.style.display = "flex"
+        timeParent.style.flexDirection = "column"
         timeParent.style.gap = "1rem"
         let check = false
         noteArray.map((output,i)=>{
@@ -479,8 +482,8 @@ remindSec.addEventListener("click",()=>{
                 timeParent.innerHTML +=`
                 <div id="card${index}" class="card" style="background:${output.color};">
                     <img src="${output.star}" alt="" onclick="star('${index}')" id="starCard${index}">
-                    <h1 id="titleText${index}" contenteditable="true" onclick="preview(${index})">${output.title}</h1>
-                    <p id="noteText${index}" contenteditable="true" onclick="preview(${index})">${output.content}</p>
+                    <h1>${output.title}</h1>
+                    <p>${output.content}</p>
                     <img src="${output.img}" alt="" class="cardPicture" id="cardPicture${index}">
                 </div>
                 `
@@ -734,7 +737,6 @@ window.archivedCard = (index) =>{
     })
     mapDisplay()
 }
-
 
 // SECTIONS
 const autoHideInp = document.querySelector(".inputDiv")
