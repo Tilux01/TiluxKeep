@@ -442,6 +442,7 @@ setRemind.addEventListener("click", ()=>{
 
 // Remind Section
 remindSec.addEventListener("click",()=>{
+    document.querySelector(".inputDiv").style.display = "none"
     autoShow.innerHTML = "Reminder"
     display.innerHTML = ""
     display.style.columnCount = "1"
