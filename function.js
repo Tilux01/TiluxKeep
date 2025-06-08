@@ -442,6 +442,15 @@ setRemind.addEventListener("click", ()=>{
 
 // Remind Section
 remindSec.addEventListener("click",()=>{
+    if(window.innerWidth < 1021){ 
+        togggleCount++;
+        const dd = document.querySelector("section div:nth-child(1) ul")
+        dd.style.width = "auto"
+        dd.style.gap = "1rem"
+        content.style.display = "initial"
+        sideBar.style.display = "none"
+        sideBar.style.width = "200px"
+    }
     document.querySelector(".inputDiv").style.display = "none"
     autoShow.innerHTML = "Reminder"
     display.innerHTML = ""
@@ -747,6 +756,15 @@ const noteSectionBtn = document.getElementById("noteSection")
 noteSectionBtn.addEventListener("click", ()=>{
     autoHideInp.style.display = "flex"
     autoShow.innerHTML = ""
+    if(window.innerWidth < 1021){ 
+        togggleCount++;
+        const dd = document.querySelector("section div:nth-child(1) ul")
+        dd.style.width = "auto"
+        dd.style.gap = "1rem"
+        content.style.display = "initial"
+        sideBar.style.display = "none"
+        sideBar.style.width = "200px"
+    }
     mapDisplay()
 })
 
@@ -755,6 +773,15 @@ const archive = document.getElementById("archive")
 archive.addEventListener("click", ()=>{
     autoHideInp.style.display = "none"
     autoShow.innerHTML = "Archive"
+    if(window.innerWidth < 1021){ 
+        togggleCount++;
+        const dd = document.querySelector("section div:nth-child(1) ul")
+        dd.style.width = "auto"
+        dd.style.gap = "1rem"
+        content.style.display = "initial"
+        sideBar.style.display = "none"
+        sideBar.style.width = "200px"
+    }
     archiveMapping()
 })
 window.archiveMapping = () =>{
@@ -967,6 +994,15 @@ favorite.addEventListener("click", ()=>{
     autoHideInp.style.display = "none"
     autoShow.innerHTML = "Favorite"
     display.innerHTML = ""
+    if(window.innerWidth < 1021){ 
+        togggleCount++;
+        const dd = document.querySelector("section div:nth-child(1) ul")
+        dd.style.width = "auto"
+        dd.style.gap = "1rem"
+        content.style.display = "initial"
+        sideBar.style.display = "none"
+        sideBar.style.width = "200px"
+    }
     starMap()
 
 })
@@ -1049,6 +1085,15 @@ const trash = document.getElementById("trash")
 trash.addEventListener("click", ()=>{
     autoHideInp.style.display = "none"
     autoShow.innerHTML = "Trash"
+    if(window.innerWidth < 1021){ 
+        togggleCount++;
+        const dd = document.querySelector("section div:nth-child(1) ul")
+        dd.style.width = "auto"
+        dd.style.gap = "1rem"
+        content.style.display = "initial"
+        sideBar.style.display = "none"
+        sideBar.style.width = "200px"
+    }
     trashMapping()
 })
 window.trashMapping = () =>{
