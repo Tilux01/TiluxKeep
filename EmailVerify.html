@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    section{
+        max-width: 400px;
+    }
+    h1{
+        font-size: 20px;
+        text-align: center;
+    }
+    div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+    div button{
+        width: 120px;
+        padding:10px 0px;
+        background: linear-gradient(135deg, rgba(255, 0, 0, 0.842), rgba(0, 0, 255, 0.788));
+        border: 0;
+        border-radius: 20px;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: all 0.4s ease;
+    }
+    div button:hover{
+        transform: translateY(-5px);
+    }
+</style>
+<body>
+    <section>
+        <div class="load"></div>
+        <h1>Email verification has been sent to your email address, Pls login to your email and click link to confirm</h1>
+        <div>
+            <button id="mail">Go to mail</button>
+            <button onclick="window.location.href ='login.html' ">Log in</button>
+        </div>
+    </section>
+</body>
+<script>
+    mail.addEventListener("click",()=>{ window.location.href = "https:\\www.gmail.com"})
+</script>
+</html>
